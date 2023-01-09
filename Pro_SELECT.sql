@@ -57,7 +57,7 @@ FROM ANIMAL_INS
 ORDER BY ANIMAL_ID DESC;
 
 
-#2023/01/06
+# 2023/01/06
 
 Q. FOOD_FACTORY 테이블에서 강원도에 위치한 식품공장의 공장 ID, 공장 이름, 주소를 조회하는 SQL문을 작성해주세요. 
 이때 결과는 공장 ID를 기준으로 오름차순 정렬해주세요.
@@ -66,3 +66,13 @@ SELECT FACTORY_ID, FACTORY_NAME, ADDRESS
 FROM FOOD_FACTORY
 WHERE ADDRESS LIKE "강원도%"
 ORDER BY FACTORY_ID;
+
+
+# 2023/01/09
+
+Q. USER_INFO 테이블에서 2021년에 가입한 회원 중 나이가 20세 이상 29세 이하인 회원이 몇 명인지 출력하는 SQL문을 작성해주세요.
+
+SELECT COUNT(USER_ID) AS USERS
+FROM USER_INFO
+WHERE (JOINED LIKE "2021%") AND (AGE BETWEEN 20 AND 29);
+
