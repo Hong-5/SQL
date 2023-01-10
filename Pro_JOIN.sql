@@ -1,0 +1,24 @@
+# 2023/01/10
+
+Q. 아직 입양을 못 간 동물 중, 가장 오래 보호소에 있었던 동물 3마리의 이름과 보호 시작일을 조회하는 SQL문을 작성해주세요. 
+이때 결과는 보호 시작일 순으로 조회해야 합니다.
+
+SELECT ANIMAL_INS.NAME, ANIMAL_INS.DATETIME
+FROM ANIMAL_OUTS 
+RIGHT JOIN ANIMAL_INS ON ANIMAL_INS.ANIMAL_ID = ANIMAL_OUTS.ANIMAL_ID
+WHERE SEX_UPON_OUTCOME IS NULL
+ORDER BY ANIMAL_INS.DATETIME
+LIMIT 3;
+
+Q. 보호소에서 중성화 수술을 거친 동물 정보를 알아보려 합니다. 
+보호소에 들어올 당시에는 중성화1되지 않았지만, 보호소를 나갈 당시에는 중성화된 동물의 아이디와 생물 종, 이름을 조회하는 아이디 순으로 조회하는 SQL 문을 작성해주세요.
+
+SELECT ANIMAL_INS.ANIMAL_ID, ANIMAL_INS.ANIMAL_TYPE, ANIMAL_INS.NAME
+FROM ANIMAL_INS
+JOIN ANIMAL_OUTS ON ANIMAL_INS.ANIMAL_ID = ANIMAL_OUTS.ANIMAL_ID
+WHERE (ANIMAL_INS.SEX_UPON_INTAKE LIKE "Intact %") 
+AND (
+    (ANIMAL_OUTS.SEX_UPON_OUTCOME LIKE 'Spayed %')
+or
+    (ANIMAL_OUTS.SEX_UPON_OUTCOME LIKE 'Neutered %')
+)
