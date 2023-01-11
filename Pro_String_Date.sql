@@ -40,3 +40,19 @@ FROM ANIMAL_OUTS
 JOIN ANIMAL_INS ON ANIMAL_OUTS.ANIMAL_ID = ANIMAL_INS.ANIMAL_ID
 ORDER BY ANIMAL_OUTS.DATETIME - ANIMAL_INS.DATETIME DESC
 LIMIT 2;
+
+# 2023/01/11
+
+Q. PRODUCT 테이블에서 상품 카테고리 코드(PRODUCT_CODE 앞 2자리) 별 상품 개수를 출력하는 SQL문을 작성해주세요.
+결과는 상품 카테고리 코드를 기준으로 오름차순 정렬해주세요.
+
+SELECT LEFT(PRODUCT_CODE,2) AS CATEGORY, COUNT(PRODUCT_ID) AS PRODUCTS
+FROM PRODUCT
+GROUP BY CATEGORY;
+
+
+Q. 동물 보호소에 들어온 동물 중 이름이 Lucy, Ella, Pickle, Rogan, Sabrina, Mitty인 동물의 아이디와 이름, 성별 및 중성화 여부를 조회하는 SQL 문을 작성해주세요.
+
+SELECT ANIMAL_ID, NAME, SEX_UPON_INTAKE
+FROM ANIMAL_INS
+WHERE NAME IN ('Lucy', 'Ella', 'Pickle', 'Rogan', 'Sabrina', 'Mitty');
