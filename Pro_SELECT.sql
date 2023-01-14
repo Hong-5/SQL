@@ -117,3 +117,12 @@ Q. 상반기에 판매된 아이스크림의 맛을 총주문량을 기준으로
 SELECT FLAVOR
 FROM FIRST_HALF
 ORDER BY TOTAL_ORDER DESC, SHIPMENT_ID;
+
+
+# 2023/01/14
+
+Q. 동물 보호소에 들어온 모든 동물의 정보를 ANIMAL_ID순으로 조회하는 SQL문을 작성해주세요. 
+
+SELECT *
+FROM ANIMAL_INS
+ORDER BY ANIMAL_ID;

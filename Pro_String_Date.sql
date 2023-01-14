@@ -56,3 +56,19 @@ Q. 동물 보호소에 들어온 동물 중 이름이 Lucy, Ella, Pickle, Rogan,
 SELECT ANIMAL_ID, NAME, SEX_UPON_INTAKE
 FROM ANIMAL_INS
 WHERE NAME IN ('Lucy', 'Ella', 'Pickle', 'Rogan', 'Sabrina', 'Mitty');
+
+
+# 2023/01/14
+
+Q. FOOD_ORDER 테이블에서 5월 1일을 기준으로 주문 ID, 제품 ID, 출고일자, 출고여부를 조회하는 SQL문을 작성해주세요. 
+출고여부는 5월 1일까지 출고완료로 이 후 날짜는 출고 대기로 미정이면 출고미정으로 출력해주시고, 결과는 주문 ID를 기준으로 오름차순 정렬해주세요.
+
+SELECT ORDER_ID, PRODUCT_ID, DATE_FORMAT(OUT_DATE, "%Y-%m-%d") AS 'OUT_DATE',
+    (CASE 
+        WHEN OUT_DATE >= "2022-05-11" THEN "출고대기"
+        WHEN OUT_DATE IS NULL THEN "출고미정"
+        WHEN OUT_DATE < "2022-05-11" THEN "출고완료"
+    END)
+    AS "출고여부" 
+FROM FOOD_ORDER
+ORDER BY ORDER_ID;
