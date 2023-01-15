@@ -37,3 +37,36 @@ FROM APPOINTMENT
 WHERE DATE_FORMAT(APNT_YMD, '%Y-%m') = '2022-05'
 GROUP BY MCDP_CD
 ORDER BY 2, 1;
+
+
+# 2023/01/15
+
+Q. PRODUCT 테이블에서 만원 단위의 가격대 별로 상품 개수를 출력하는 SQL 문을 작성해주세요. 
+이때 컬럼명은 각각 컬럼명은 PRICE_GROUP, PRODUCTS로 지정해주시고 가격대 정보는 각 구간의 최소금액(10,000원 이상 ~ 20,000 미만인 구간인 경우 10,000)으로 표시해주세요. 
+결과는 가격대를 기준으로 오름차순 정렬해주세요.
+
+SELECT FLOOR(PRICE / 10000) * 10000 AS PRICE_GROUP,
+    COUNT(PRODUCT_ID) AS PRODUCTS
+FROM PRODUCT
+GROUP BY PRICE_GROUP
+ORDER BY PRICE_GROUP
+
+
+Q. REST_INFO 테이블에서 음식종류별로 즐겨찾기수가 가장 많은 식당의 음식 종류, ID, 식당 이름, 즐겨찾기수를 조회하는 SQL문을 작성해주세요. 
+이때 결과는 음식 종류를 기준으로 내림차순 정렬해주세요.
+
+SELECT FOOD_TYPE, REST_ID, REST_NAME, FAVORITES
+FROM 
+    (SELECT FOOD_TYPE, REST_ID, REST_NAME, FAVORITES, MAX(FAVORITES) OVER (PARTITION BY FOOD_TYPE) AS FAV
+    FROM REST_INFO) AS tmp
+WHERE FAVORITES = FAV
+ORDER BY FOOD_TYPE DESC;
+
+Q. 상반기 동안 각 아이스크림 성분 타입과 성분 타입에 대한 아이스크림의 총주문량을 총주문량이 작은 순서대로 조회하는 SQL 문을 작성해주세요. 
+이때 총주문량을 나타내는 컬럼명은 TOTAL_ORDER로 지정해주세요.
+
+SELECT INGREDIENT_TYPE, SUM(TOTAL_ORDER) AS TOTAL_ORDER
+FROM FIRST_HALF
+JOIN ICECREAM_INFO ON FIRST_HALF.FLAVOR = ICECREAM_INFO.FLAVOR
+GROUP BY INGREDIENT_TYPE
+ORDER BY TOTAL_ORDER;
