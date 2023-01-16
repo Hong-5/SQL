@@ -39,3 +39,12 @@ Q. PRODUCT 테이블에서 판매 중인 상품 중 가장 높은 판매가를 �
 
 SELECT MAX(PRICE) AS MAX_PRICE
 FROM PRODUCT;
+
+# 2023/01/16
+
+Q. 가장 최근에 들어온 동물은 언제 들어왔는지 조회하는 SQL 문을 작성해주세요.
+
+SELECT DATETIME AS 시간
+FROM ANIMAL_INS
+ORDER BY DATETIME DESC
+LIMIT 1;

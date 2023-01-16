@@ -51,7 +51,6 @@ FROM PRODUCT
 GROUP BY PRICE_GROUP
 ORDER BY PRICE_GROUP
 
-
 Q. REST_INFO 테이블에서 음식종류별로 즐겨찾기수가 가장 많은 식당의 음식 종류, ID, 식당 이름, 즐겨찾기수를 조회하는 SQL문을 작성해주세요. 
 이때 결과는 음식 종류를 기준으로 내림차순 정렬해주세요.
 
@@ -70,3 +69,16 @@ FROM FIRST_HALF
 JOIN ICECREAM_INFO ON FIRST_HALF.FLAVOR = ICECREAM_INFO.FLAVOR
 GROUP BY INGREDIENT_TYPE
 ORDER BY TOTAL_ORDER;
+
+
+
+# 2023/01/16
+
+Q. FOOD_PRODUCT 테이블에서 식품분류별로 가격이 제일 비싼 식품의 분류, 가격, 이름을 조회하는 SQL문을 작성해주세요. 
+이때 식품분류가 '과자', '국', '김치', '식용유'인 경우만 출력시켜 주시고 결과는 식품 가격을 기준으로 내림차순 정렬해주세요.
+
+SELECT CATEGORY, MAX_PRICE, PRODUCT_NAME
+FROM (SELECT PRODUCT_NAME, CATEGORY, PRICE, MAX(PRICE) OVER (PARTITION BY CATEGORY) AS MAX_PRICE
+FROM FOOD_PRODUCT) AS tmp
+WHERE (PRICE = MAX_PRICE) AND CATEGORY IN ('과자', '국', '김치', '식용유')
+ORDER BY MAX_PRICE DESC;
