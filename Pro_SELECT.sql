@@ -140,3 +140,25 @@ FROM ONLINE_SALE
 GROUP BY USER_ID, PRODUCT_ID
 HAVING B >= 2) AS tmp
 ORDER BY USER_ID, PRODUCT_ID DESC;
+
+
+# 2023/01/18
+
+Q. 데이터 분석 팀에서는 우유(Milk)와 요거트(Yogurt)를 동시에 구입한 장바구니가 있는지 알아보려 합니다. 우유와 요거트를 동시에 구입한 장바구니의 아이디를 조회하는 SQL 문을 작성해주세요.
+이때 결과는 장바구니의 아이디 순으로 나와야 합니다.
+
+SELECT CART_ID
+FROM CART_PRODUCTS
+WHERE CART_ID IN (SELECT CART_ID
+                  FROM CART_PRODUCTS
+                  WHERE NAME = 'MILK') AND NAME = 'Yogurt'
+ORDER BY CART_ID;
+
+
+Q. 상반기 아이스크림 총주문량이 3,000보다 높으면서 아이스크림의 주 성분이 과일인 아이스크림의 맛을 총주문량이 큰 순서대로 조회하는 SQL 문을 작성해주세요.
+
+SELECT FIRST_HALF.FLAVOR
+FROM FIRST_HALF
+JOIN ICECREAM_INFO ON FIRST_HALF.FLAVOR = ICECREAM_INFO.FLAVOR
+WHERE FIRST_HALF.TOTAL_ORDER > 3000 AND ICECREAM_INFO.INGREDIENT_TYPE = 'fruit_based'
+ORDER BY TOTAL_ORDER DESC; 
