@@ -162,3 +162,26 @@ FROM FIRST_HALF
 JOIN ICECREAM_INFO ON FIRST_HALF.FLAVOR = ICECREAM_INFO.FLAVOR
 WHERE FIRST_HALF.TOTAL_ORDER > 3000 AND ICECREAM_INFO.INGREDIENT_TYPE = 'fruit_based'
 ORDER BY TOTAL_ORDER DESC; 
+
+
+# 2023/01/19
+
+Q. 이 서비스에서는 공간을 둘 이상 등록한 사람을 "헤비 유저"라고 부릅니다. 
+헤비 유저가 등록한 공간의 정보를 아이디 순으로 조회하는 SQL문을 작성해주세요.
+
+SELECT ID, NAME, HOST_ID
+FROM PLACES
+WHERE HOST_ID IN
+                (SELECT HOST_ID
+                FROM PLACES
+                GROUP BY HOST_ID
+                HAVING COUNT(ID)  >= 2) 
+ORDER BY ID;
+
+
+Q. CAR_RENTAL_COMPANY_CAR 테이블에서 자동차 종류가 'SUV'인 자동차들의 평균 일일 대여 요금을 출력하는 SQL문을 작성해주세요.
+이때 평균 일일 대여 요금은 소수 첫 번째 자리에서 반올림하고, 컬럼명은 AVERAGE_FEE 로 지정해주세요.
+
+SELECT ROUND(SUM(daily_fee) / COUNT(car_id),0) AS AVERAGE_FEE
+FROM CAR_RENTAL_COMPANY_CAR
+WHERE car_type = 'SUV'
