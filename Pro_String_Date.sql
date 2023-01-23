@@ -102,3 +102,26 @@ SELECT history_id, car_id , DATE_FORMAT(start_date, "%Y-%m-%d") AS START_DATE,
 FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
 WHERE START_DATE LIKE "2022-09-%" 
 ORDER BY history_id DESC;
+
+
+# 2023/01/23
+
+Q. CAR_RENTAL_COMPANY_CAR 테이블과 CAR_RENTAL_COMPANY_RENTAL_HISTORY 테이블과 CAR_RENTAL_COMPANY_DISCOUNT_PLAN 테이블에서 자동차 종류가 '트럭'인 자동차의 대여 기록에 대해서 대여 기록 별로 대여 금액(컬럼명: FEE)을 구하여 대여 기록 ID와 대여 금액 리스트를 출력하는 SQL문을 작성해주세요. 
+결과는 대여 금액을 기준으로 내림차순 정렬하고, 대여 금액이 같은 경우 대여 기록 ID를 기준으로 내림차순 정렬해주세요.
+
+SELECT history_id, 
+    ROUND(CASE 
+        WHEN B.PERIOD < 7 THEN B.PERIOD*A.daily_fee
+        WHEN B.PERIOD < 30 THEN B.PERIOD*A.daily_fee*0.95
+        WHEN B.PERIOD < 90 THEN B.PERIOD*A.daily_fee*0.92
+        ELSE B.PERIOD*A.daily_fee*0.85
+    END, 0) AS FEE
+FROM 
+    (SELECT car_id, daily_fee
+    FROM CAR_RENTAL_COMPANY_CAR
+    WHERE car_type = "트럭") AS A
+    JOIN
+    (SELECT history_id, car_id, DATEDIFF(end_date, start_date) + 1 AS PERIOD
+    FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY) AS B
+ON A.car_id = B.car_id
+ORDER BY FEE DESC, HISTORY_ID DESC;
