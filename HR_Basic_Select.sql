@@ -56,3 +56,28 @@ Q. Find the difference between the total number of CITY entries in the table and
 
 SELECT COUNT(CITY) - COUNT(DISTINCT CITY)
 FROM STATION
+
+
+# 2023/01/28
+
+Q. Query the two cities in STATION with the shortest and longest CITY names, as well as their respective lengths (i.e.: number of characters in the name). 
+If there is more than one smallest or largest city, choose the one that comes first when ordered alphabetically.
+When ordered alphabetically, the CITY names are listed as ABC, DEF, PQRS, and WXY, with lengths  and . The longest name is PQRS, but there are  options for shortest named city. 
+Choose ABC, because it comes first alphabetically.
+
+    (SELECT CITY, LENGTH(CITY)
+    FROM STATION
+    ORDER BY LENGTH(CITY), CITY
+    LIMIT 1)
+UNION ALL (SELECT CITY, LENGTH(CITY)
+    FROM STATION
+    ORDER BY LENGTH(CITY) DESC, CITY
+    LIMIT 1)
+
+
+Q. Query the list of CITY names starting with vowels (i.e., a, e, i, o, or u) from STATION. 
+Your result cannot contain duplicates.
+
+SELECT DISTINCT CITY
+FROM STATION
+WHERE LEFT(CITY,1) IN ("a", "e", "i", "o", "u")
