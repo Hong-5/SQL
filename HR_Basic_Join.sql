@@ -57,3 +57,73 @@ FROM tmp
 WHERE GRADE < 8
 ORDER BY Marks) z
 ORDER BY GRADE DESC, NAME, Marks
+
+# 2023/02/02
+
+-- Q. Harry Potter and his friends are at Ollivander's with Ron, finally replacing Charlie's old broken wand. 
+-- Hermione decides the best way to choose is by determining the minimum number of gold galleons needed to buy each non-evil wand of high power and age. 
+-- Write a query to print the id, age, coins_needed, and power of the wands that Ron's interested in, sorted in order of descending power. 
+-- If more than one wand has same power, sort the result in order of descending age.
+
+-- 이렇게 서브쿼리로 group by 하지 않고도 하는 방법이 있었다!
+
+SELECT  W.ID, P.AGE, W.COINS_NEEDED, W.POWER
+FROM WANDS W
+JOIN WANDS_PROPERTY P ON W.CODE = P.CODE
+WHERE P.IS_EVIL = 0
+AND W.COINS_NEEDED = 
+    (SELECT MIN(W1.COINS_NEEDED)
+    FROM WANDS W1
+    JOIN WANDS_PROPERTY P1 ON W1.CODE = P1.CODE
+    WHERE P.IS_EVIL = 0
+    AND W.POWER = W1.POWER
+    AND P.AGE = P1.AGE)
+ORDER BY POWER DESC, AGE DESC;
+
+
+
+-- Q. Julia just finished conducting a coding contest, and she needs your help assembling the leaderboard! 
+-- Write a query to print the respective hacker_id and name of hackers who achieved full scores for more than one challenge. 
+-- Order your output in descending order by the total number of challenges in which the hacker earned a full score. 
+-- If more than one hacker received full scores in same number of challenges, then sort them by ascending hacker_id.
+
+SELECT H.hacker_id, H.name
+FROM Submissions S
+JOIN Challenges C ON S.challenge_id = C.challenge_id
+JOIN Difficulty D ON C.difficulty_level = D.difficulty_level
+JOIN Hackers H ON S.hacker_id = H.hacker_id
+WHERE S.score = D.score
+GROUP BY H.hacker_id, H.name
+HAVING COUNT(H.hacker_id) > 1
+ORDER BY COUNT(H.hacker_id) DESC, H.hacker_id
+
+
+-- Q. Julia asked her students to create some coding challenges. Write a query to print the hacker_id, name, and the total number of challenges created by each student. 
+-- Sort your results by the total number of challenges in descending order. If more than one student created the same number of challenges, then sort the result by hacker_id. 
+-- If more than one student created the same number of challenges and the count is less than the maximum number of challenges created, then exclude those students from the result.
+
+SELECT H3.hacker_id, H3.name, COUNT(C3.challenge_id) AS COUNT_NUM
+FROM HACKERS H3
+JOIN Challenges C3 ON H3.hacker_id = C3.hacker_id
+GROUP BY H3.hacker_id, H3.name
+HAVING COUNT_NUM IN
+    ((SELECT COUNT_NUM
+    FROM
+        (SELECT H.hacker_id, H.name, COUNT(C.challenge_id) AS COUNT_NUM
+        FROM HACKERS H
+        JOIN Challenges C ON H.hacker_id = C.hacker_id
+        GROUP BY H.hacker_id, H.name
+        ORDER BY COUNT_NUM DESC, H.hacker_id) as tmp
+    GROUP BY COUNT_NUM
+    HAVING COUNT(tmp.hacker_id) = 1)
+    UNION ALL
+    (SELECT MAX(COUNT_NUM)
+    FROM 
+        (SELECT COUNT(C2.challenge_id) AS COUNT_NUM
+        FROM HACKERS H1
+        JOIN Challenges C2 ON H1.hacker_id = C2.hacker_id
+        GROUP BY H1.hacker_id, H1.name) AS tmp1))
+ORDER BY COUNT_NUM DESC, H3.hacker_id;
+
+
+
