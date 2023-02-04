@@ -126,4 +126,51 @@ HAVING COUNT_NUM IN
 ORDER BY COUNT_NUM DESC, H3.hacker_id;
 
 
+# 2023/02/04
 
+-- Q. Julia asked her students to create some coding challenges. 
+-- Write a query to print the hacker_id, name, and the total number of challenges created by each student. 
+-- Sort your results by the total number of challenges in descending order. 
+-- If more than one student created the same number of challenges, then sort the result by hacker_id. 
+-- If more than one student created the same number of challenges and the count is less than the maximum number of challenges created, then exclude those students from the result.
+
+SELECT H.hacker_id, H.name, COUNT(challenge_id) AS COUNT
+FROM Hackers H
+JOIN Challenges C ON H.hacker_id = C.hacker_id
+GROUP BY H.hacker_id, H.name
+HAVING COUNT IN 
+(
+        (SELECT COUNT
+    FROM
+        (SELECT H.hacker_id, H.name, COUNT(challenge_id) AS COUNT
+        FROM Hackers H
+        JOIN Challenges C ON H.hacker_id = C.hacker_id
+        GROUP BY H.hacker_id, H.name) AS tmp
+    GROUP BY COUNT
+    HAVING COUNT(hacker_id) = 1)
+    UNION ALL
+    (SELECT MAX(COUNT) AS COUNT
+    FROM
+        (SELECT COUNT(challenge_id) AS COUNT
+        FROM Hackers H
+        JOIN Challenges C ON H.hacker_id = C.hacker_id
+        GROUP BY H.hacker_id, H.name) AS tmp1)
+)
+ORDER BY COUNT DESC, H.hacker_id;
+
+
+-- Q. You did such a great job helping Julia with her last coding contest challenge that she wants you to work on this one, too!
+-- The total score of a hacker is the sum of their maximum scores for all of the challenges. 
+-- Write a query to print the hacker_id, name, and total score of the hackers ordered by the descending score. 
+-- If more than one hacker achieved the same total score, then sort the result by ascending hacker_id. 
+-- Exclude all hackers with a total score of  from your result.
+
+SELECT H.hacker_id, H.name, SUM(MAX_SOCRE) AS FINAL_SCORE
+FROM 
+(SELECT S.hacker_id, S.challenge_id, MAX(score) AS MAX_SOCRE
+FROM Submissions S
+GROUP BY S.hacker_id, S.challenge_id) AS TMP
+JOIN Hackers H ON TMP.hacker_id = H.hacker_id
+GROUP BY H.hacker_id, H.name
+HAVING FINAL_SCORE > 0
+ORDER BY FINAL_SCORE DESC, hacker_id;
