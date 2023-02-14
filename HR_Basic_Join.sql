@@ -174,3 +174,4 @@ JOIN Hackers H ON TMP.hacker_id = H.hacker_id
 GROUP BY H.hacker_id, H.name
 HAVING FINAL_SCORE > 0
 ORDER BY FINAL_SCORE DESC, hacker_id;
+
